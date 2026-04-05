@@ -35,7 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (containerRef.current) {
       const draggable = new Draggable(containerRef.current, {
         itemSelector: '.draggable-task-item',
-        eventData: function(eventEl) {
+        eventData: function(eventEl: Element) {
           return {
             title: eventEl.getAttribute('data-title'),
             duration: '00:20',
