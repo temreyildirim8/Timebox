@@ -69,7 +69,7 @@ export function useStore() {
     });
   }, [selectedDate]);
 
-  const scheduleTask = useCallback(async (taskId: string, startTime: string, durationMinutes: number = 60) => {
+  const scheduleTask = useCallback(async (taskId: string, startTime: string, durationMinutes: number = 20) => {
     const start = new Date(startTime);
     const end = new Date(start.getTime() + durationMinutes * 60000);
     const dateStr = format(start, 'yyyy-MM-dd');

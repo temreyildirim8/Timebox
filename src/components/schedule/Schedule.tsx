@@ -162,18 +162,58 @@ export const Schedule: React.FC<ScheduleProps> = ({
         <h2 style={{ fontSize: '1rem', fontWeight: 600, textTransform: 'uppercase' }}>
           {format(new Date(selectedDate), 'EEEE, MMMM do')}
         </h2>
-        <input 
-          type="date" 
-          value={selectedDate} 
-          onChange={(e) => setDate(e.target.value)}
-          style={{ 
-            backgroundColor: 'var(--bg-tertiary)', 
-            padding: '0.4rem 0.6rem', 
-            borderRadius: '6px', 
-            fontSize: '0.8rem',
-            colorScheme: 'dark'
-          }}
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <button
+            onClick={() => {
+              const date = new Date(selectedDate);
+              date.setDate(date.getDate() - 1);
+              setDate(format(date, 'yyyy-MM-dd'));
+            }}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '0.4rem',
+              display: 'flex',
+              alignItems: 'center',
+              color: 'var(--text-secondary)'
+            }}
+            aria-label="Previous day"
+          >
+            ←
+          </button>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setDate(e.target.value)}
+            style={{
+              backgroundColor: 'var(--bg-tertiary)',
+              padding: '0.4rem 0.6rem',
+              borderRadius: '6px',
+              fontSize: '0.8rem',
+              colorScheme: 'dark'
+            }}
+          />
+          <button
+            onClick={() => {
+              const date = new Date(selectedDate);
+              date.setDate(date.getDate() + 1);
+              setDate(format(date, 'yyyy-MM-dd'));
+            }}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '0.4rem',
+              display: 'flex',
+              alignItems: 'center',
+              color: 'var(--text-secondary)'
+            }}
+            aria-label="Next day"
+          >
+            →
+          </button>
+        </div>
       </header>
 
       <div className="calendar-wrapper" style={{ flex: 1 }}>
@@ -184,6 +224,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           headerToolbar={false}
           allDaySlot={false}
           slotDuration="00:15:00"
+          snapDuration="00:05:00"
           slotLabelInterval="01:00"
           slotLabelFormat={{
             hour: 'numeric',

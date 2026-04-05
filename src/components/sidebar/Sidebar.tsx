@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         eventData: function(eventEl) {
           return {
             title: eventEl.getAttribute('data-title'),
-            duration: '01:00',
+            duration: '00:20',
             extendedProps: {
               taskId: eventEl.getAttribute('data-task-id')
             }
