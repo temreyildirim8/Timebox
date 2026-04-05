@@ -1,4 +1,4 @@
-> **🚀 Deployed Website:** [https://nitish-17.github.io/Timebox/](https://nitish-17.github.io/Timebox/)
+> **🚀 Deployed Website:** [https://temreyildirim8.github.io/Timebox/](https://temreyildirim8.github.io/Timebox/)
 
 ---
 
@@ -110,4 +110,4 @@ If you ever need to check on your app, stop it, or view logs, open a terminal an
 
 ---
 
-> **🚀 Deployed Website:** [https://nitish-17.github.io/Timebox/](https://nitish-17.github.io/Timebox/)
+> **🚀 Deployed Website:** [https://temreyildirim8.github.io/Timebox/](https://temreyildirim8.github.io/Timebox/)
