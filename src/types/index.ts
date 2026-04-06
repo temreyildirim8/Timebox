@@ -6,6 +6,7 @@ export interface Task {
   createdAt: string;
   date?: string; // YYYY-MM-DD for tasks assigned to a specific day
   color?: string;
+  order: number; // for manual sorting
 }
 
 export interface TimeBlock {

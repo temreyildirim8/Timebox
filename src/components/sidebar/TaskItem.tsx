@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Trash2, CheckCircle, Circle, GripVertical, Clock, Palette } from 'lucide-react';
 import { format } from 'date-fns';
 import { ChromePicker } from 'react-color';
-import { 
-  useFloating, 
-  autoUpdate, 
-  offset, 
-  flip, 
-  shift, 
-  useClick, 
-  useDismiss, 
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import {
+  useFloating,
+  autoUpdate,
+  offset,
+  flip,
+  shift,
+  useClick,
+  useDismiss,
   useInteractions,
   FloatingPortal,
   useHover,
@@ -28,11 +30,27 @@ interface TaskItemProps {
   moveIcon: React.ReactNode;
 }
 
-export const TaskItem: React.FC<TaskItemProps> = ({ 
-  task, timeBlock, toggleTask, deleteTask, updateTask, moveTask, moveIcon 
+export const TaskItem: React.FC<TaskItemProps> = ({
+  task, timeBlock, toggleTask, deleteTask, updateTask, moveTask, moveIcon
 }) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
+  // Sortable functionality
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
 
   // Prevent text selection while color picker is open/being dragged
   useEffect(() => {
@@ -88,18 +106,22 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
   return (
     <div
+      ref={setNodeRef}
       className="draggable-task-item task-item-container"
       data-task-id={task.id}
       data-title={task.title}
+      {...attributes}
       style={{
+        ...style,
         borderLeft: `4px solid ${task.color || 'var(--accent)'}`
       }}
     >
       <div className="task-item-content">
-        <div 
+        <div
           ref={tooltipRefs.setReference}
           className="task-item-drag-handle"
           {...getTooltipProps()}
+          {...listeners}
         >
           <GripVertical size={14} />
         </div>

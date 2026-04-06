@@ -7,11 +7,11 @@ import { DndContext } from '@dnd-kit/core';
 
 function App() {
   const store = useStore();
-  const { 
+  const {
     tasks, timeBlocks, notes, selectedDate,
     addTask, toggleTask, deleteTask, updateTask, moveTaskToList,
     setDate, updateNote, updateTimeBlock, deleteTimeBlock,
-    scheduleTask, unscheduleTask
+    scheduleTask, unscheduleTask, reorderTasks
   } = store;
 
   const currentNote = notes[selectedDate] || '';
@@ -28,6 +28,7 @@ function App() {
             deleteTask={deleteTask}
             updateTask={updateTask}
             moveTaskToList={moveTaskToList}
+            reorderTasks={reorderTasks}
             selectedDate={selectedDate}
           />
         </div>

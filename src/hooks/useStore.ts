@@ -21,6 +21,10 @@ export function useStore() {
   }, [notesArray]);
 
   const addTask = useCallback(async (title: string, list: 'today' | 'later') => {
+    // Get the highest order value for tasks in this list
+    const existingTasks = await db.tasks.where('list').equals(list).toArray();
+    const maxOrder = existingTasks.reduce((max, t) => Math.max(max, t.order || 0), -1);
+
     const newTask: Task = {
       id: Math.random().toString(36).substr(2, 9),
       title,
@@ -28,6 +32,7 @@ export function useStore() {
       list,
       createdAt: new Date().toISOString(),
       date: list === 'today' ? selectedDate : undefined,
+      order: maxOrder + 1,
     };
     await db.tasks.add(newTask);
   }, [selectedDate]);
@@ -68,6 +73,37 @@ export function useStore() {
       }
     });
   }, [selectedDate]);
+
+  const reorderTasks = useCallback(async (activeId: string, overId: string) => {
+    await db.transaction('rw', db.tasks, async () => {
+      const activeTask = await db.tasks.get(activeId);
+      const overTask = await db.tasks.get(overId);
+
+      if (!activeTask || !overTask) return;
+      if (activeTask.list !== overTask.list) return; // Only reorder within same list
+
+      const tasksInList = await db.tasks
+        .where('list')
+        .equals(activeTask.list)
+        .sortBy('order');
+
+      const activeIndex = tasksInList.findIndex(t => t.id === activeId);
+      const overIndex = tasksInList.findIndex(t => t.id === overId);
+
+      if (activeIndex === -1 || overIndex === -1) return;
+
+      // Reorder: remove from current position and insert at new position
+      const [removed] = tasksInList.splice(activeIndex, 1);
+      tasksInList.splice(overIndex, 0, removed);
+
+      // Update all orders
+      await Promise.all(
+        tasksInList.map((task, index) =>
+          db.tasks.update(task.id, { order: index })
+        )
+      );
+    });
+  }, []);
 
   const scheduleTask = useCallback(async (taskId: string, startTime: string, durationMinutes: number = 20) => {
     const start = new Date(startTime);
@@ -131,5 +167,6 @@ export function useStore() {
     deleteTimeBlock,
     scheduleTask,
     unscheduleTask,
+    reorderTasks,
   };
 }

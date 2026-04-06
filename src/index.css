@@ -211,6 +211,11 @@ input, textarea {
   cursor: grab;
 }
 
+.task-item-container[aria-pressed="true"] {
+  background-color: var(--bg-secondary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 .task-item-content {
   display: flex;
   align-items: center;

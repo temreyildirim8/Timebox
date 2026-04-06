@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, ArrowRight, ArrowLeft } from 'lucide-react';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TaskItem } from './TaskItem';
 import type { Task, TimeBlock } from '../../types';
 
@@ -41,12 +42,16 @@ export const TaskList: React.FC<TaskListProps> = ({
   const moveTarget = type === 'today' ? 'later' : 'today';
   const MoveIcon = type === 'today' ? ArrowRight : ArrowLeft;
 
+  // Sort by order first, then by completed status
   const sortedTasks = [...tasks].sort((a, b) => {
-    if (a.completed !== b.completed) {
-      return a.completed ? 1 : -1;
-    }
+    const orderA = a.order ?? 0;
+    const orderB = b.order ?? 0;
+    if (orderA !== orderB) return orderA - orderB;
+    if (a.completed !== b.completed) return a.completed ? 1 : -1;
     return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
   });
+
+  const taskIds = sortedTasks.map(t => t.id);
 
   return (
     <section className="task-list-section">
@@ -64,18 +69,20 @@ export const TaskList: React.FC<TaskListProps> = ({
         </div>
       </form>
       <div className="task-list">
-        {sortedTasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            timeBlock={timeBlocks.find(b => b.taskId === task.id)}
-            toggleTask={toggleTask}
-            deleteTask={deleteTask}
-            updateTask={updateTask}
-            moveTask={() => moveTaskToList(task.id, moveTarget)}
-            moveIcon={<MoveIcon size={14} />}
-          />
-        ))}
+        <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
+          {sortedTasks.map((task) => (
+            <TaskItem
+              key={task.id}
+              task={task}
+              timeBlock={timeBlocks.find(b => b.taskId === task.id)}
+              toggleTask={toggleTask}
+              deleteTask={deleteTask}
+              updateTask={updateTask}
+              moveTask={() => moveTaskToList(task.id, moveTarget)}
+              moveIcon={<MoveIcon size={14} />}
+            />
+          ))}
+        </SortableContext>
       </div>
     </section>
   );

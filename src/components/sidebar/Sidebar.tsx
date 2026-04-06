@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
+import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core';
 import { Draggable } from '@fullcalendar/interaction';
 import { Download, Upload } from 'lucide-react';
 import { exportDB, importDB } from 'dexie-export-import';
@@ -15,6 +16,7 @@ interface SidebarProps {
   deleteTask: (id: string) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   moveTaskToList: (id: string, list: 'today' | 'later') => void;
+  reorderTasks: (activeId: string, overId: string) => void;
   selectedDate: string;
 }
 
@@ -26,10 +28,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   deleteTask,
   updateTask,
   moveTaskToList,
+  reorderTasks,
   selectedDate,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      reorderTasks(active.id as string, over.id as string);
+    }
+  };
 
   useEffect(() => {
     if (containerRef.current) {
@@ -122,31 +132,33 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       <div className="scrollable sidebar-content">
-        <TaskList
-          title="Today"
-          placeholder="Add task to today..."
-          tasks={todayTasks}
-          timeBlocks={timeBlocks}
-          type="today"
-          addTask={addTask}
-          toggleTask={toggleTask}
-          deleteTask={deleteTask}
-          updateTask={updateTask}
-          moveTaskToList={moveTaskToList}
-        />
+        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <TaskList
+            title="Today"
+            placeholder="Add task to today..."
+            tasks={todayTasks}
+            timeBlocks={timeBlocks}
+            type="today"
+            addTask={addTask}
+            toggleTask={toggleTask}
+            deleteTask={deleteTask}
+            updateTask={updateTask}
+            moveTaskToList={moveTaskToList}
+          />
 
-        <TaskList
-          title="Later"
-          placeholder="Brain dump..."
-          tasks={laterTasks}
-          timeBlocks={timeBlocks}
-          type="later"
-          addTask={addTask}
-          toggleTask={toggleTask}
-          deleteTask={deleteTask}
-          updateTask={updateTask}
-          moveTaskToList={moveTaskToList}
-        />
+          <TaskList
+            title="Later"
+            placeholder="Brain dump..."
+            tasks={laterTasks}
+            timeBlocks={timeBlocks}
+            type="later"
+            addTask={addTask}
+            toggleTask={toggleTask}
+            deleteTask={deleteTask}
+            updateTask={updateTask}
+            moveTaskToList={moveTaskToList}
+          />
+        </DndContext>
       </div>
     </aside>
   );
