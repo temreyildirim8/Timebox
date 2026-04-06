@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core';
 import { Draggable } from '@fullcalendar/interaction';
-import { Download, Upload } from 'lucide-react';
+import { Download, Upload, ZoomIn, ZoomOut } from 'lucide-react';
 import { exportDB, importDB } from 'dexie-export-import';
 import { db } from '../../db/db';
 import type { Task, TimeBlock } from '../../types';
@@ -35,6 +35,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [zoom, setZoom] = useState(100);
+
+  const handleZoomIn = () => setZoom(z => Math.min(z + 10, 150));
+  const handleZoomOut = () => setZoom(z => Math.max(z - 10, 70));
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -116,24 +120,33 @@ export const Sidebar: React.FC<SidebarProps> = ({
     >
       <div className="sidebar-header">
         <h1 className="sidebar-title" style={{ flex: 1 }}>Timebox</h1>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <button className="action-btn" onClick={handleZoomOut} title="Zoom Out" disabled={zoom <= 70}>
+            <ZoomOut size={16} />
+          </button>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', minWidth: '35px', textAlign: 'center' }}>
+            {zoom}%
+          </span>
+          <button className="action-btn" onClick={handleZoomIn} title="Zoom In" disabled={zoom >= 150}>
+            <ZoomIn size={16} />
+          </button>
           <button className="action-btn" onClick={handleExport} title="Export Backup">
             <Upload size={18} />
           </button>
           <button className="action-btn" onClick={handleImportClick} title="Import Restore">
             <Download size={18} />
           </button>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileChange} 
-            style={{ display: 'none' }} 
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            style={{ display: 'none' }}
             accept=".json"
           />
         </div>
       </div>
 
-      <div className="scrollable sidebar-content">
+      <div className="scrollable sidebar-content" style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top center' }}>
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <TaskList
             title="Today"
