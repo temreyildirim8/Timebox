@@ -209,6 +209,7 @@ input, textarea {
   margin-bottom: 0.4rem;
   background-color: var(--card-bg);
   cursor: grab;
+  min-height: 3.5rem;
 }
 
 .task-item-container[aria-pressed="true"] {
@@ -258,9 +259,12 @@ input, textarea {
   font-size: 0.9rem;
   text-decoration: none;
   color: var(--text-primary);
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.4;
+  line-clamp: 2;
 }
 
 .task-item-title.completed {

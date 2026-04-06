@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useDroppable } from "@dnd-kit/core";
+import { useDroppable, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
 import { Draggable } from "@fullcalendar/interaction";
 import { Download, Upload } from "lucide-react";
@@ -37,6 +37,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -159,6 +167,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         }}
       >
         <DndContext
+          sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >

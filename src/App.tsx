@@ -3,7 +3,6 @@ import { Schedule } from "./components/schedule/Schedule";
 import { Notes } from "./components/notes/Notes";
 import { ActivityHeatmap } from "./components/heatmap/ActivityHeatmap";
 import { useStore } from "./hooks/useStore";
-import { DndContext } from "@dnd-kit/core";
 
 function App() {
   const store = useStore();
@@ -31,8 +30,7 @@ function App() {
   const currentNote = notes[selectedDate] || "";
 
   return (
-    <DndContext>
-      <div className="app-container">
+    <div className="app-container">
         <div className="app-sidebar-column">
           <Sidebar
             tasks={tasks}
@@ -69,7 +67,6 @@ function App() {
           <ActivityHeatmap tasks={tasks} />
         </div>
       </div>
-    </DndContext>
   );
 }
 
