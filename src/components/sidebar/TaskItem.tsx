@@ -231,7 +231,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                   {...getPickerFloatingProps()}
                 >
                   <ChromePicker 
-                    color={task.color || '#3b82f6'} 
+                    color={task.color || '#204784'} 
                     onChange={handleColorChange}
                     disableAlpha={false}
                   />
