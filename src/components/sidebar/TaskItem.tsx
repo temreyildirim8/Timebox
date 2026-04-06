@@ -127,7 +127,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   ]);
 
   const tooltipHover = useHover(tooltipContext, {
-    delay: 1000,
+    delay: 300,
     handleClose: safePolygon(),
   });
   const tooltipRole = useRole(tooltipContext, { role: 'tooltip' });
@@ -157,6 +157,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         <div
           ref={tooltipRefs.setReference}
           className="task-item-drag-handle"
+          title={task.title}
           {...getTooltipProps()}
           {...listeners}
         >
