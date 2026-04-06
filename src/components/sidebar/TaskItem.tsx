@@ -189,6 +189,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         {isTooltipOpen && (
           <FloatingPortal>
             <div
+              // eslint-disable-next-line react-hooks/refs
               ref={tooltipRefs.setFloating}
               style={tooltipStyles}
               className="task-tooltip"
@@ -256,6 +257,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
             {isPickerOpen && (
               <FloatingPortal>
                 <div
+                  // eslint-disable-next-line react-hooks/refs
                   ref={pickerRefs.setFloating}
                   style={{ ...pickerStyles, zIndex: 99999 }}
                   {...getPickerFloatingProps()}
