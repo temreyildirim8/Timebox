@@ -313,7 +313,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           color: #a0a0a0; /* Grey text */
         }
         .fc-v-event .fc-event-main {
-          color: white;
+          color: #d0d0d0;
         }
         .fc-timegrid-event .fc-event-time {
           font-size: 0.7rem;
