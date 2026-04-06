@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Trash2, CheckCircle, Circle, GripVertical, Clock, Palette } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Trash2, CheckCircle, Circle, GripVertical, Clock, Palette, Pencil } from 'lucide-react';
 import { format } from 'date-fns';
 import { ChromePicker } from 'react-color';
 import { useSortable } from '@dnd-kit/sortable';
@@ -26,15 +26,19 @@ interface TaskItemProps {
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
+  updateTaskTitle: (id: string, title: string) => void;
   moveTask: () => void;
   moveIcon: React.ReactNode;
 }
 
 export const TaskItem: React.FC<TaskItemProps> = ({
-  task, timeBlock, toggleTask, deleteTask, updateTask, moveTask, moveIcon
+  task, timeBlock, toggleTask, deleteTask, updateTask, updateTaskTitle, moveTask, moveIcon
 }) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(task.title);
+  const editInputRef = useRef<HTMLInputElement>(null);
 
   // Sortable functionality
   const {
@@ -63,6 +67,39 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       document.body.classList.remove('picker-open');
     };
   }, [isPickerOpen]);
+
+  // Focus input when editing
+  useEffect(() => {
+    if (isEditing && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [isEditing]);
+
+  const handleEditStart = () => {
+    setEditTitle(task.title);
+    setIsEditing(true);
+  };
+
+  const handleEditSave = () => {
+    if (editTitle.trim() && editTitle !== task.title) {
+      updateTaskTitle(task.id, editTitle.trim());
+    }
+    setIsEditing(false);
+  };
+
+  const handleEditCancel = () => {
+    setEditTitle(task.title);
+    setIsEditing(false);
+  };
+
+  const handleEditKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleEditSave();
+    } else if (e.key === 'Escape') {
+      handleEditCancel();
+    }
+  };
 
   // Color Picker Floating Logic
   const { refs: pickerRefs, floatingStyles: pickerStyles, context: pickerContext } = useFloating({
@@ -148,9 +185,25 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         </button>
 
         <div className="task-item-body">
-          <div className={`task-item-title ${task.completed ? 'completed' : ''}`}>
-            {task.title}
-          </div>
+          {isEditing ? (
+            <input
+              ref={editInputRef}
+              type="text"
+              className="task-edit-input"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              onBlur={handleEditSave}
+              onKeyDown={handleEditKeyDown}
+            />
+          ) : (
+            <div
+              className={`task-item-title ${task.completed ? 'completed' : ''}`}
+              onDoubleClick={handleEditStart}
+              title="Double-click to edit"
+            >
+              {task.title}
+            </div>
+          )}
           {timeBlock && (
             <div className="task-item-time">
               <Clock size={10} />

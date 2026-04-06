@@ -9,7 +9,7 @@ function App() {
   const store = useStore();
   const {
     tasks, timeBlocks, notes, selectedDate,
-    addTask, toggleTask, deleteTask, updateTask, moveTaskToList,
+    addTask, toggleTask, deleteTask, updateTask, updateTaskTitle, moveTaskToList,
     setDate, updateNote, updateTimeBlock, deleteTimeBlock,
     scheduleTask, unscheduleTask, reorderTasks
   } = store;
@@ -27,6 +27,7 @@ function App() {
             toggleTask={toggleTask}
             deleteTask={deleteTask}
             updateTask={updateTask}
+            updateTaskTitle={updateTaskTitle}
             moveTaskToList={moveTaskToList}
             reorderTasks={reorderTasks}
             selectedDate={selectedDate}

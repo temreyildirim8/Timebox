@@ -253,6 +253,17 @@ input, textarea {
   color: var(--text-secondary);
 }
 
+.task-edit-input {
+  font-size: 0.9rem;
+  padding: 2px 6px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  width: 100%;
+  outline: none;
+}
+
 .task-item-time {
   font-size: 0.7rem;
   display: flex;

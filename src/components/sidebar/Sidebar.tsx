@@ -15,6 +15,7 @@ interface SidebarProps {
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
+  updateTaskTitle: (id: string, title: string) => void;
   moveTaskToList: (id: string, list: 'today' | 'later') => void;
   reorderTasks: (activeId: string, overId: string) => void;
   selectedDate: string;
@@ -27,6 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   toggleTask,
   deleteTask,
   updateTask,
+  updateTaskTitle,
   moveTaskToList,
   reorderTasks,
   selectedDate,
@@ -143,6 +145,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             toggleTask={toggleTask}
             deleteTask={deleteTask}
             updateTask={updateTask}
+            updateTaskTitle={updateTaskTitle}
             moveTaskToList={moveTaskToList}
           />
 
@@ -156,6 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             toggleTask={toggleTask}
             deleteTask={deleteTask}
             updateTask={updateTask}
+            updateTaskTitle={updateTaskTitle}
             moveTaskToList={moveTaskToList}
           />
         </DndContext>

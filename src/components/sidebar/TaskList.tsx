@@ -14,6 +14,7 @@ interface TaskListProps {
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
+  updateTaskTitle: (id: string, title: string) => void;
   moveTaskToList: (id: string, list: 'today' | 'later') => void;
 }
 
@@ -27,6 +28,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   toggleTask,
   deleteTask,
   updateTask,
+  updateTaskTitle,
   moveTaskToList,
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -78,6 +80,7 @@ export const TaskList: React.FC<TaskListProps> = ({
               toggleTask={toggleTask}
               deleteTask={deleteTask}
               updateTask={updateTask}
+              updateTaskTitle={updateTaskTitle}
               moveTask={() => moveTaskToList(task.id, moveTarget)}
               moveIcon={<MoveIcon size={14} />}
             />
