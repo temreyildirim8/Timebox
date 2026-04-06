@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [zoom, setZoom] = useState(100);
 
   const handleZoomIn = () => setZoom(z => Math.min(z + 10, 150));
-  const handleZoomOut = () => setZoom(z => Math.max(z - 10, 70));
+  const handleZoomOut = () => setZoom(z => Math.max(z - 10, 40));
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -121,7 +121,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="sidebar-header">
         <h1 className="sidebar-title" style={{ flex: 1 }}>Timebox</h1>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <button className="action-btn" onClick={handleZoomOut} title="Zoom Out" disabled={zoom <= 70}>
+          <button className="action-btn" onClick={handleZoomOut} title="Zoom Out" disabled={zoom <= 40}>
             <ZoomOut size={16} />
           </button>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', minWidth: '35px', textAlign: 'center' }}>
