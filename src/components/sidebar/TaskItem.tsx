@@ -6,6 +6,7 @@ import {
   GripVertical,
   Clock,
   Palette,
+  Copy,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ChromePicker, type ColorResult } from "react-color";
@@ -32,6 +33,7 @@ interface TaskItemProps {
   timeBlock?: TimeBlock;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
+  duplicateTask: (id: string) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   updateTaskTitle: (id: string, title: string) => void;
   moveTask: () => void;
@@ -43,6 +45,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   timeBlock,
   toggleTask,
   deleteTask,
+  duplicateTask,
   updateTask,
   updateTaskTitle,
   moveTask,
@@ -176,6 +179,14 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       }}
     >
       <div className="task-item-content">
+        <button
+          className="task-item-duplicate-btn"
+          onClick={() => duplicateTask(task.id)}
+          title="Duplicate task"
+        >
+          <Copy size={14} />
+        </button>
+
         <div
           ref={tooltipRefs.setReference}
           className="task-item-drag-handle"

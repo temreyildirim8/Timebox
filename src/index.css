@@ -221,15 +221,30 @@ input, textarea {
   align-items: center;
 }
 
+.task-item-duplicate-btn {
+  cursor: pointer;
+  margin-right: 0.25em;
+  color: var(--text-secondary);
+  padding: 0.25em;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.task-item-container:hover .task-item-duplicate-btn {
+  opacity: 1;
+}
+
 .task-item-drag-handle {
   cursor: grab;
-  margin-right: 0.5rem;
+  margin-right: 0.5em;
   color: var(--text-secondary);
-  padding: 4px;
+  padding: 0.25em;
 }
 
 .task-item-toggle {
-  margin-right: 0.75rem;
+  margin-right: 0.75em;
   display: flex;
   align-items: center;
 }

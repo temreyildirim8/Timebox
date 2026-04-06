@@ -1,11 +1,13 @@
-import { useState, useCallback, useMemo } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { format } from 'date-fns';
-import { db } from '../db/db';
-import type { Task, TimeBlock } from '../types';
+import { useState, useCallback, useMemo } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { format } from "date-fns";
+import { db } from "../db/db";
+import type { Task, TimeBlock } from "../types";
 
 export function useStore() {
-  const [selectedDate, setSelectedDate] = useState(() => format(new Date(), 'yyyy-MM-dd'));
+  const [selectedDate, setSelectedDate] = useState(() =>
+    format(new Date(), "yyyy-MM-dd"),
+  );
 
   // Reactive data from Dexie
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) || [];
@@ -14,28 +16,37 @@ export function useStore() {
 
   // Convert notes array to record for backward compatibility
   const notes = useMemo(() => {
-    return notesArray.reduce((acc, note) => {
-      acc[note.date] = note.content;
-      return acc;
-    }, {} as Record<string, string>);
+    return notesArray.reduce(
+      (acc, note) => {
+        acc[note.date] = note.content;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
   }, [notesArray]);
 
-  const addTask = useCallback(async (title: string, list: 'today' | 'later') => {
-    // Get the highest order value for tasks in this list
-    const existingTasks = await db.tasks.where('list').equals(list).toArray();
-    const maxOrder = existingTasks.reduce((max, t) => Math.max(max, t.order || 0), -1);
+  const addTask = useCallback(
+    async (title: string, list: "today" | "later") => {
+      // Get the highest order value for tasks in this list
+      const existingTasks = await db.tasks.where("list").equals(list).toArray();
+      const maxOrder = existingTasks.reduce(
+        (max, t) => Math.max(max, t.order || 0),
+        -1,
+      );
 
-    const newTask: Task = {
-      id: Math.random().toString(36).substr(2, 9),
-      title,
-      completed: false,
-      list,
-      createdAt: new Date().toISOString(),
-      date: list === 'today' ? selectedDate : undefined,
-      order: maxOrder + 1,
-    };
-    await db.tasks.add(newTask);
-  }, [selectedDate]);
+      const newTask: Task = {
+        id: Math.random().toString(36).substr(2, 9),
+        title,
+        completed: false,
+        list,
+        createdAt: new Date().toISOString(),
+        date: list === "today" ? selectedDate : undefined,
+        order: maxOrder + 1,
+      };
+      await db.tasks.add(newTask);
+    },
+    [selectedDate],
+  );
 
   const toggleTask = useCallback(async (id: string) => {
     const task = await db.tasks.get(id);
@@ -45,17 +56,47 @@ export function useStore() {
   }, []);
 
   const deleteTask = useCallback(async (id: string) => {
-    await db.transaction('rw', db.tasks, db.timeBlocks, async () => {
+    await db.transaction("rw", db.tasks, db.timeBlocks, async () => {
       await db.tasks.delete(id);
-      await db.timeBlocks.where('taskId').equals(id).delete();
+      await db.timeBlocks.where("taskId").equals(id).delete();
     });
   }, []);
 
+  const duplicateTask = useCallback(async (id: string) => {
+    const task = await db.tasks.get(id);
+    if (!task) return;
+
+    // Get the highest order value for tasks in this list
+    const existingTasks = await db.tasks
+      .where("list")
+      .equals(task.list)
+      .toArray();
+    const maxOrder = existingTasks.reduce(
+      (max, t) => Math.max(max, t.order || 0),
+      -1,
+    );
+
+    const newTask: Task = {
+      id: Math.random().toString(36).substr(2, 9),
+      title: `${task.title} (copy)`,
+      completed: false,
+      list: task.list,
+      createdAt: new Date().toISOString(),
+      date: task.date,
+      order: maxOrder + 1,
+      color: task.color,
+    };
+    await db.tasks.add(newTask);
+  }, []);
+
   const updateTask = useCallback(async (id: string, updates: Partial<Task>) => {
-    await db.transaction('rw', db.tasks, db.timeBlocks, async () => {
+    await db.transaction("rw", db.tasks, db.timeBlocks, async () => {
       await db.tasks.update(id, updates);
       if (updates.color) {
-        await db.timeBlocks.where('taskId').equals(id).modify({ color: updates.color });
+        await db.timeBlocks
+          .where("taskId")
+          .equals(id)
+          .modify({ color: updates.color });
       }
     });
   }, []);
@@ -64,18 +105,21 @@ export function useStore() {
     await db.tasks.update(id, { title });
   }, []);
 
-  const moveTaskToList = useCallback(async (id: string, list: 'today' | 'later') => {
-    const date = list === 'today' ? selectedDate : undefined;
-    await db.transaction('rw', db.tasks, db.timeBlocks, async () => {
-      await db.tasks.update(id, { list, date });
-      if (list === 'later') {
-        await db.timeBlocks.where('taskId').equals(id).delete();
-      }
-    });
-  }, [selectedDate]);
+  const moveTaskToList = useCallback(
+    async (id: string, list: "today" | "later") => {
+      const date = list === "today" ? selectedDate : undefined;
+      await db.transaction("rw", db.tasks, db.timeBlocks, async () => {
+        await db.tasks.update(id, { list, date });
+        if (list === "later") {
+          await db.timeBlocks.where("taskId").equals(id).delete();
+        }
+      });
+    },
+    [selectedDate],
+  );
 
   const reorderTasks = useCallback(async (activeId: string, overId: string) => {
-    await db.transaction('rw', db.tasks, async () => {
+    await db.transaction("rw", db.tasks, async () => {
       const activeTask = await db.tasks.get(activeId);
       const overTask = await db.tasks.get(overId);
 
@@ -83,12 +127,12 @@ export function useStore() {
       if (activeTask.list !== overTask.list) return; // Only reorder within same list
 
       const tasksInList = await db.tasks
-        .where('list')
+        .where("list")
         .equals(activeTask.list)
-        .sortBy('order');
+        .sortBy("order");
 
-      const activeIndex = tasksInList.findIndex(t => t.id === activeId);
-      const overIndex = tasksInList.findIndex(t => t.id === overId);
+      const activeIndex = tasksInList.findIndex((t) => t.id === activeId);
+      const overIndex = tasksInList.findIndex((t) => t.id === overId);
 
       if (activeIndex === -1 || overIndex === -1) return;
 
@@ -99,39 +143,42 @@ export function useStore() {
       // Update all orders
       await Promise.all(
         tasksInList.map((task, index) =>
-          db.tasks.update(task.id, { order: index })
-        )
+          db.tasks.update(task.id, { order: index }),
+        ),
       );
     });
   }, []);
 
-  const scheduleTask = useCallback(async (taskId: string, startTime: string, durationMinutes: number = 20) => {
-    const start = new Date(startTime);
-    const end = new Date(start.getTime() + durationMinutes * 60000);
-    const dateStr = format(start, 'yyyy-MM-dd');
-    
-    await db.transaction('rw', db.tasks, db.timeBlocks, async () => {
-      const task = await db.tasks.get(taskId);
-      if (!task) return;
+  const scheduleTask = useCallback(
+    async (taskId: string, startTime: string, durationMinutes: number = 20) => {
+      const start = new Date(startTime);
+      const end = new Date(start.getTime() + durationMinutes * 60000);
+      const dateStr = format(start, "yyyy-MM-dd");
 
-      await db.tasks.update(taskId, { list: 'today', date: dateStr });
+      await db.transaction("rw", db.tasks, db.timeBlocks, async () => {
+        const task = await db.tasks.get(taskId);
+        if (!task) return;
 
-      const newBlock: TimeBlock = {
-        id: Math.random().toString(36).substr(2, 9),
-        taskId: taskId,
-        title: task.title,
-        startTime: start.toISOString(),
-        endTime: end.toISOString(),
-        color: task.color || 'var(--accent)',
-      };
+        await db.tasks.update(taskId, { list: "today", date: dateStr });
 
-      await db.timeBlocks.where('taskId').equals(taskId).delete();
-      await db.timeBlocks.add(newBlock);
-    });
-  }, []);
+        const newBlock: TimeBlock = {
+          id: Math.random().toString(36).substr(2, 9),
+          taskId: taskId,
+          title: task.title,
+          startTime: start.toISOString(),
+          endTime: end.toISOString(),
+          color: task.color || "var(--accent)",
+        };
+
+        await db.timeBlocks.where("taskId").equals(taskId).delete();
+        await db.timeBlocks.add(newBlock);
+      });
+    },
+    [],
+  );
 
   const unscheduleTask = useCallback(async (taskId: string) => {
-    await db.timeBlocks.where('taskId').equals(taskId).delete();
+    await db.timeBlocks.where("taskId").equals(taskId).delete();
   }, []);
 
   const setDate = useCallback((date: string) => {
@@ -142,9 +189,12 @@ export function useStore() {
     await db.notes.put({ date, content });
   }, []);
 
-  const updateTimeBlock = useCallback(async (id: string, updates: Partial<TimeBlock>) => {
-    await db.timeBlocks.update(id, updates);
-  }, []);
+  const updateTimeBlock = useCallback(
+    async (id: string, updates: Partial<TimeBlock>) => {
+      await db.timeBlocks.update(id, updates);
+    },
+    [],
+  );
 
   const deleteTimeBlock = useCallback(async (id: string) => {
     await db.timeBlocks.delete(id);
@@ -158,6 +208,7 @@ export function useStore() {
     addTask,
     toggleTask,
     deleteTask,
+    duplicateTask,
     updateTask,
     updateTaskTitle,
     moveTaskToList,

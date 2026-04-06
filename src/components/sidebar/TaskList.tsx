@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
-import { Plus, ArrowRight, ArrowLeft } from 'lucide-react';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { TaskItem } from './TaskItem';
-import type { Task, TimeBlock } from '../../types';
+import React, { useState } from "react";
+import { Plus, ArrowRight, ArrowLeft } from "lucide-react";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { TaskItem } from "./TaskItem";
+import type { Task, TimeBlock } from "../../types";
 
 interface TaskListProps {
   title: string;
   placeholder: string;
   tasks: Task[];
   timeBlocks: TimeBlock[];
-  type: 'today' | 'later';
-  addTask: (title: string, list: 'today' | 'later') => void;
+  type: "today" | "later";
+  addTask: (title: string, list: "today" | "later") => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
+  duplicateTask: (id: string) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   updateTaskTitle: (id: string, title: string) => void;
-  moveTaskToList: (id: string, list: 'today' | 'later') => void;
+  moveTaskToList: (id: string, list: "today" | "later") => void;
 }
 
 export const TaskList: React.FC<TaskListProps> = ({
@@ -27,22 +31,23 @@ export const TaskList: React.FC<TaskListProps> = ({
   addTask,
   toggleTask,
   deleteTask,
+  duplicateTask,
   updateTask,
   updateTaskTitle,
   moveTaskToList,
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {
       addTask(inputValue.trim(), type);
-      setInputValue('');
+      setInputValue("");
     }
   };
 
-  const moveTarget = type === 'today' ? 'later' : 'today';
-  const MoveIcon = type === 'today' ? ArrowRight : ArrowLeft;
+  const moveTarget = type === "today" ? "later" : "today";
+  const MoveIcon = type === "today" ? ArrowRight : ArrowLeft;
 
   // Sort by order first, then by completed status
   const sortedTasks = [...tasks].sort((a, b) => {
@@ -53,7 +58,7 @@ export const TaskList: React.FC<TaskListProps> = ({
     return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
   });
 
-  const taskIds = sortedTasks.map(t => t.id);
+  const taskIds = sortedTasks.map((t) => t.id);
 
   return (
     <section className="task-list-section">
@@ -76,9 +81,10 @@ export const TaskList: React.FC<TaskListProps> = ({
             <TaskItem
               key={task.id}
               task={task}
-              timeBlock={timeBlocks.find(b => b.taskId === task.id)}
+              timeBlock={timeBlocks.find((b) => b.taskId === task.id)}
               toggleTask={toggleTask}
               deleteTask={deleteTask}
+              duplicateTask={duplicateTask}
               updateTask={updateTask}
               updateTaskTitle={updateTaskTitle}
               moveTask={() => moveTaskToList(task.id, moveTarget)}

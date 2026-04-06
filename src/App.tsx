@@ -1,20 +1,34 @@
-import { Sidebar } from './components/sidebar/Sidebar';
-import { Schedule } from './components/schedule/Schedule';
-import { Notes } from './components/notes/Notes';
-import { ActivityHeatmap } from './components/heatmap/ActivityHeatmap';
-import { useStore } from './hooks/useStore';
-import { DndContext } from '@dnd-kit/core';
+import { Sidebar } from "./components/sidebar/Sidebar";
+import { Schedule } from "./components/schedule/Schedule";
+import { Notes } from "./components/notes/Notes";
+import { ActivityHeatmap } from "./components/heatmap/ActivityHeatmap";
+import { useStore } from "./hooks/useStore";
+import { DndContext } from "@dnd-kit/core";
 
 function App() {
   const store = useStore();
   const {
-    tasks, timeBlocks, notes, selectedDate,
-    addTask, toggleTask, deleteTask, updateTask, updateTaskTitle, moveTaskToList,
-    setDate, updateNote, updateTimeBlock, deleteTimeBlock,
-    scheduleTask, unscheduleTask, reorderTasks
+    tasks,
+    timeBlocks,
+    notes,
+    selectedDate,
+    addTask,
+    toggleTask,
+    deleteTask,
+    duplicateTask,
+    updateTask,
+    updateTaskTitle,
+    moveTaskToList,
+    setDate,
+    updateNote,
+    updateTimeBlock,
+    deleteTimeBlock,
+    scheduleTask,
+    unscheduleTask,
+    reorderTasks,
   } = store;
 
-  const currentNote = notes[selectedDate] || '';
+  const currentNote = notes[selectedDate] || "";
 
   return (
     <DndContext>
@@ -26,6 +40,7 @@ function App() {
             addTask={addTask}
             toggleTask={toggleTask}
             deleteTask={deleteTask}
+            duplicateTask={duplicateTask}
             updateTask={updateTask}
             updateTaskTitle={updateTaskTitle}
             moveTaskToList={moveTaskToList}

@@ -14,6 +14,7 @@ interface SidebarProps {
   addTask: (title: string, list: "today" | "later") => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
+  duplicateTask: (id: string) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   updateTaskTitle: (id: string, title: string) => void;
   moveTaskToList: (id: string, list: "today" | "later") => void;
@@ -27,6 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   addTask,
   toggleTask,
   deleteTask,
+  duplicateTask,
   updateTask,
   updateTaskTitle,
   moveTaskToList,
@@ -169,6 +171,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             addTask={addTask}
             toggleTask={toggleTask}
             deleteTask={deleteTask}
+            duplicateTask={duplicateTask}
             updateTask={updateTask}
             updateTaskTitle={updateTaskTitle}
             moveTaskToList={moveTaskToList}
@@ -183,6 +186,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             addTask={addTask}
             toggleTask={toggleTask}
             deleteTask={deleteTask}
+            duplicateTask={duplicateTask}
             updateTask={updateTask}
             updateTaskTitle={updateTaskTitle}
             moveTaskToList={moveTaskToList}
