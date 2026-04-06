@@ -1,22 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDroppable } from '@dnd-kit/core';
-import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core';
-import { Draggable } from '@fullcalendar/interaction';
-import { Download, Upload, ZoomIn, ZoomOut } from 'lucide-react';
-import { exportDB, importDB } from 'dexie-export-import';
-import { db } from '../../db/db';
-import type { Task, TimeBlock } from '../../types';
-import { TaskList } from './TaskList';
+import React, { useEffect, useRef } from "react";
+import { useDroppable } from "@dnd-kit/core";
+import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
+import { Draggable } from "@fullcalendar/interaction";
+import { Download, Upload } from "lucide-react";
+import { exportDB, importDB } from "dexie-export-import";
+import { db } from "../../db/db";
+import type { Task, TimeBlock } from "../../types";
+import { TaskList } from "./TaskList";
 
 interface SidebarProps {
   tasks: Task[];
   timeBlocks: TimeBlock[];
-  addTask: (title: string, list: 'today' | 'later') => void;
+  addTask: (title: string, list: "today" | "later") => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   updateTaskTitle: (id: string, title: string) => void;
-  moveTaskToList: (id: string, list: 'today' | 'later') => void;
+  moveTaskToList: (id: string, list: "today" | "later") => void;
   reorderTasks: (activeId: string, overId: string) => void;
   selectedDate: string;
 }
@@ -35,10 +35,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [zoom, setZoom] = useState(100);
-
-  const handleZoomIn = () => setZoom(z => Math.min(z + 10, 150));
-  const handleZoomOut = () => setZoom(z => Math.max(z - 10, 40));
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -50,37 +46,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
   useEffect(() => {
     if (containerRef.current) {
       const draggable = new Draggable(containerRef.current, {
-        itemSelector: '.draggable-task-item',
-        eventData: function(eventEl: Element) {
+        itemSelector: ".draggable-task-item",
+        eventData: function (eventEl: Element) {
           return {
-            title: eventEl.getAttribute('data-title'),
-            duration: '00:20',
+            title: eventEl.getAttribute("data-title"),
+            duration: "00:20",
             extendedProps: {
-              taskId: eventEl.getAttribute('data-task-id')
-            }
+              taskId: eventEl.getAttribute("data-task-id"),
+            },
           };
-        }
+        },
       });
       return () => draggable.destroy();
     }
   }, []);
 
   const { setNodeRef, isOver } = useDroppable({
-    id: 'sidebar-droppable',
+    id: "sidebar-droppable",
   });
 
   const handleExport = async () => {
     try {
       const blob = await exportDB(db);
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `timebox-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `timebox-backup-${new Date().toISOString().split("T")[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Export failed:', error);
-      alert('Backup failed. See console for details.');
+      console.error("Export failed:", error);
+      alert("Backup failed. See console for details.");
     }
   };
 
@@ -98,56 +94,72 @@ export const Sidebar: React.FC<SidebarProps> = ({
       // 2. Import the new database from the file
       await db.delete();
       await importDB(file);
-      window.location.reload(); 
+      window.location.reload();
     } catch (error) {
-      console.error('Import failed:', error);
-      alert('Restore failed. Make sure you selected a valid backup file.');
+      console.error("Import failed:", error);
+      alert("Restore failed. Make sure you selected a valid backup file.");
       // Re-open current db if possible if import failed
-      try { await db.open(); } catch(e) {}
+      try {
+        await db.open();
+      } catch {
+        // Database reopen failed, continuing without cached data
+      }
     }
   };
 
-  const todayTasks = tasks.filter((t) => t.list === 'today' && t.date === selectedDate);
-  const laterTasks = tasks.filter((t) => t.list === 'later');
+  const todayTasks = tasks.filter(
+    (t) => t.list === "today" && t.date === selectedDate,
+  );
+  const laterTasks = tasks.filter((t) => t.list === "later");
 
   return (
-    <aside 
+    <aside
       ref={(node) => {
         setNodeRef(node);
-        (containerRef as any).current = node;
-      }} 
-      className={`sidebar ${isOver ? 'sidebar-droppable-active' : ''}`}
+        containerRef.current = node as HTMLDivElement | null;
+      }}
+      className={`sidebar ${isOver ? "sidebar-droppable-active" : ""}`}
     >
       <div className="sidebar-header">
-        <h1 className="sidebar-title" style={{ flex: 1 }}>Timebox</h1>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <button className="action-btn" onClick={handleZoomOut} title="Zoom Out" disabled={zoom <= 40}>
-            <ZoomOut size={16} />
-          </button>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', minWidth: '35px', textAlign: 'center' }}>
-            {zoom}%
-          </span>
-          <button className="action-btn" onClick={handleZoomIn} title="Zoom In" disabled={zoom >= 150}>
-            <ZoomIn size={16} />
-          </button>
-          <button className="action-btn" onClick={handleExport} title="Export Backup">
+        <h1 className="sidebar-title" style={{ flex: 1 }}>
+          Timebox
+        </h1>
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          <button
+            className="action-btn"
+            onClick={handleExport}
+            title="Export Backup"
+          >
             <Upload size={18} />
           </button>
-          <button className="action-btn" onClick={handleImportClick} title="Import Restore">
+          <button
+            className="action-btn"
+            onClick={handleImportClick}
+            title="Import Restore"
+          >
             <Download size={18} />
           </button>
           <input
             type="file"
             ref={fileInputRef}
             onChange={handleFileChange}
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
             accept=".json"
           />
         </div>
       </div>
 
-      <div className="scrollable sidebar-content" style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'top center' }}>
-        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <div
+        className="scrollable sidebar-content"
+        style={{
+          transform: `scale(1)`,
+          transformOrigin: "top center",
+        }}
+      >
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
           <TaskList
             title="Today"
             placeholder="Add task to today..."
