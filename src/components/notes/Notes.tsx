@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
 
 interface NotesProps {
   date: string;
@@ -9,11 +9,6 @@ interface NotesProps {
 export const Notes: React.FC<NotesProps> = ({ date, note, updateNote }) => {
   const [localNote, setLocalNote] = useState(note);
 
-  // Sync local state when date changes or store note changes from outside
-  useEffect(() => {
-    setLocalNote(note);
-  }, [date, note]);
-
   const handleBlur = () => {
     if (localNote !== note) {
       updateNote(date, localNote);
@@ -22,13 +17,13 @@ export const Notes: React.FC<NotesProps> = ({ date, note, updateNote }) => {
 
   return (
     <div className="notes-panel">
-      <header className="notes-header">
+      <header className="notes-header animate-in delay-3">
         <h2 className="notes-title">Daily Notes</h2>
       </header>
-      <div className="notes-content">
+      <div className="notes-content animate-in delay-4">
         <textarea
           placeholder="Start writing... (Brain dump, rough work, planning)"
-          value={localNote || ''}
+          value={localNote || ""}
           onChange={(e) => setLocalNote(e.target.value)}
           onBlur={handleBlur}
           className="notes-textarea"

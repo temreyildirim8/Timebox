@@ -1,5 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { useDroppable, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  useDroppable,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
 import { Draggable } from "@fullcalendar/interaction";
 import { Download, Upload } from "lucide-react";
@@ -109,7 +114,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       window.location.reload();
     } catch (error) {
       console.error("Import failed:", error);
-      showToast("Restore failed. Make sure you selected a valid backup file.", "error");
+      showToast(
+        "Restore failed. Make sure you selected a valid backup file.",
+        "error",
+      );
       // Re-open current db if possible if import failed
       try {
         await db.open();
@@ -132,7 +140,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       }}
       className={`sidebar ${isOver ? "sidebar-droppable-active" : ""}`}
     >
-      <div className="sidebar-header">
+      <div className="sidebar-header animate-in delay-1">
         <h1 className="sidebar-title" style={{ flex: 1 }}>
           Timebox
         </h1>
@@ -162,7 +170,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       <div
-        className="scrollable sidebar-content"
+        className="scrollable sidebar-content animate-in delay-2"
         style={{
           transform: `scale(1)`,
           transformOrigin: "top center",
