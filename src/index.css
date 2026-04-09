@@ -612,12 +612,6 @@ button:disabled,
 
 @media (max-width: 1024px) {
   .app-container {
-    grid-template-columns: 35% 30% 35%;
-  }
-}
-
-@media (max-width: 768px) {
-  .app-container {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
     gap: var(--space-md);
@@ -658,7 +652,7 @@ button:disabled,
 /* Large screens */
 @media (min-width: 1440px) {
   .app-container {
-    grid-template-columns: 25% 50% 25%;
+    grid-template-columns: 35% 30% 35%;
   }
 }
 
