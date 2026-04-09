@@ -7,6 +7,7 @@ import { exportDB, importDB } from "dexie-export-import";
 import { db } from "../../db/db";
 import type { Task, TimeBlock } from "../../types";
 import { TaskList } from "./TaskList";
+import { showToast } from "../ui/Toast";
 
 interface SidebarProps {
   tasks: Task[];
@@ -84,9 +85,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       a.download = `timebox-backup-${new Date().toISOString().split("T")[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
+      showToast("Backup exported successfully", "success");
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Backup failed. See console for details.");
+      showToast("Backup failed. Please try again.", "error");
     }
   };
 
@@ -107,7 +109,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       window.location.reload();
     } catch (error) {
       console.error("Import failed:", error);
-      alert("Restore failed. Make sure you selected a valid backup file.");
+      showToast("Restore failed. Make sure you selected a valid backup file.", "error");
       // Re-open current db if possible if import failed
       try {
         await db.open();

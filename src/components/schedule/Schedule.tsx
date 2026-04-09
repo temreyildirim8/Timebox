@@ -3,6 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { format, isSameDay } from 'date-fns';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { TimeBlock, Task } from '../../types';
 import { useDroppable } from '@dnd-kit/core';
 
@@ -28,6 +29,32 @@ export const Schedule: React.FC<ScheduleProps> = ({
   unscheduleTask,
 }) => {
   const calendarRef = useRef<FullCalendar>(null);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle if no input/textarea is focused
+      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') {
+        return;
+      }
+
+      if (e.key === 'ArrowLeft') {
+        const date = new Date(selectedDate);
+        date.setDate(date.getDate() - 1);
+        setDate(format(date, 'yyyy-MM-dd'));
+      } else if (e.key === 'ArrowRight') {
+        const date = new Date(selectedDate);
+        date.setDate(date.getDate() + 1);
+        setDate(format(date, 'yyyy-MM-dd'));
+      } else if (e.key === 't' || e.key === 'T') {
+        // Go to today
+        setDate(format(new Date(), 'yyyy-MM-dd'));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedDate, setDate]);
 
   const scrollToCurrentTime = (smooth = true) => {
     if (!calendarRef.current) return;
@@ -169,30 +196,18 @@ export const Schedule: React.FC<ScheduleProps> = ({
               date.setDate(date.getDate() - 1);
               setDate(format(date, 'yyyy-MM-dd'));
             }}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.4rem',
-              display: 'flex',
-              alignItems: 'center',
-              color: 'var(--text-secondary)'
-            }}
+            className="nav-btn"
             aria-label="Previous day"
           >
-            ←
+            <ChevronLeft size={20} />
           </button>
+          <label htmlFor="date-picker" className="visually-hidden">Select date</label>
           <input
+            id="date-picker"
             type="date"
             value={selectedDate}
             onChange={(e) => setDate(e.target.value)}
-            style={{
-              backgroundColor: 'var(--bg-tertiary)',
-              padding: '0.4rem 0.6rem',
-              borderRadius: '6px',
-              fontSize: '0.8rem',
-              colorScheme: 'dark'
-            }}
+            className="date-picker"
           />
           <button
             onClick={() => {
@@ -200,18 +215,10 @@ export const Schedule: React.FC<ScheduleProps> = ({
               date.setDate(date.getDate() + 1);
               setDate(format(date, 'yyyy-MM-dd'));
             }}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.4rem',
-              display: 'flex',
-              alignItems: 'center',
-              color: 'var(--text-secondary)'
-            }}
+            className="nav-btn"
             aria-label="Next day"
           >
-            →
+            <ChevronRight size={20} />
           </button>
         </div>
       </header>

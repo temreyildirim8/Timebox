@@ -2,6 +2,7 @@ import { Sidebar } from "./components/sidebar/Sidebar";
 import { Schedule } from "./components/schedule/Schedule";
 import { Notes } from "./components/notes/Notes";
 import { ActivityHeatmap } from "./components/heatmap/ActivityHeatmap";
+import { ToastContainer } from "./components/ui/Toast";
 import { useStore } from "./hooks/useStore";
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
 
   return (
     <div className="app-container">
+        <ToastContainer />
         <div className="app-sidebar-column">
           <Sidebar
             tasks={tasks}

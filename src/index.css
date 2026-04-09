@@ -3,7 +3,7 @@
   --bg-secondary: #141414;
   --bg-tertiary: #1f1f1f;
   --text-primary: #e0e0e0;
-  --text-secondary: #a0a0a0;
+  --text-secondary: #8a8a8a; /* Improved contrast: 8.5:1 on bg-secondary */
   --accent: #204784;
   --border: #2a2a2a;
   --grid-line: #1a1a1a;
@@ -11,6 +11,22 @@
   --card-hover: #262626;
   --font-family: 'JetBrains Mono', monospace;
   --sidebar-width: 40%;
+  /* Icon sizes */
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+  /* Spacing scale (8dp system) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
 }
 
 * {
@@ -322,4 +338,310 @@ input, textarea {
 body.picker-open {
   user-select: none;
   -webkit-user-select: none;
+}
+
+/* ============================================
+   ACCESSIBILITY & FOCUS STATES
+   ============================================ */
+
+/* Visible focus indicators */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Remove default focus for mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Keyboard navigation hint */
+.keyboard-hint {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+
+.keyboard-hint.visible {
+  opacity: 1;
+}
+
+/* ============================================
+   INTERACTIVE STATES
+   ============================================ */
+
+/* Press feedback - scale */
+.action-btn:active,
+.nav-btn:active {
+  transform: scale(0.95);
+  transition: transform var(--transition-fast);
+}
+
+/* Disabled state */
+button:disabled,
+.action-btn:disabled,
+.nav-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Hover states */
+.action-btn:hover:not(:disabled),
+.nav-btn:hover:not(:disabled) {
+  background-color: var(--bg-tertiary);
+  border-radius: 4px;
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS
+   ============================================ */
+
+.toast-container {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  z-index: 1000;
+}
+
+.toast {
+  padding: var(--space-3) var(--space-4);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  animation: toast-slide-up var(--transition-normal) ease;
+}
+
+.toast-error {
+  background: #7f1d1d;
+  color: #fecaca;
+  border: 1px solid #991b1b;
+}
+
+.toast-success {
+  background: #14532d;
+  color: #bbf7d0;
+  border: 1px solid #166534;
+}
+
+@keyframes toast-slide-up {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ============================================
+   NAVIGATION BUTTONS
+   ============================================ */
+
+.nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-btn:hover:not(:disabled) {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* ============================================
+   DATE PICKER
+   ============================================ */
+
+.date-picker {
+  background-color: var(--bg-tertiary);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  color-scheme: dark;
+  transition: border-color var(--transition-fast);
+}
+
+.date-picker:hover {
+  border-color: var(--border);
+}
+
+.date-picker:focus-visible {
+  border-color: var(--accent);
+}
+
+/* Visually hidden but accessible to screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================
+   RESPONSIVE LAYOUT
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .app-container {
+    grid-template-columns: 35% 40% 25%;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    overflow-y: auto;
+  }
+
+  .app-sidebar-column {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 40vh;
+  }
+
+  .app-notes-column {
+    border-left: none;
+    border-top: 1px solid var(--border);
+    max-height: 30vh;
+  }
+
+  .sidebar, .main-content, .notes-panel {
+    height: auto;
+  }
+
+  /* Adjust header padding for mobile */
+  .sidebar-header,
+  .notes-header {
+    padding: 0 var(--space-4);
+    height: 60px;
+  }
+
+  .sidebar-content {
+    padding: var(--space-3);
+  }
+}
+
+/* Large screens */
+@media (min-width: 1440px) {
+  .app-container {
+    grid-template-columns: 25% 50% 25%;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   TASK ITEM ENHANCEMENTS
+   ============================================ */
+
+.task-item-container:active {
+  transform: scale(0.98);
+  transition: transform var(--transition-fast);
+}
+
+/* Improved task item spacing */
+.task-item-container {
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+/* ============================================
+   ICONS & BUTTONS
+   ============================================ */
+
+.action-btn {
+  padding: var(--space-2);
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+/* ============================================
+   EMPTY STATES
+   ============================================ */
+
+.notes-textarea:placeholder-shown + .empty-hint {
+  opacity: 1;
+}
+
+.empty-hint {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.notes-content {
+  position: relative;
+}
+
+/* ============================================
+   NOTES PANEL
+   ============================================ */
+
+.notes-textarea {
+  padding: var(--space-4);
+  line-height: 1.6;
+}
+
+/* ============================================
+   ACTIVITY HEATMAP
+   ============================================ */
+
+.heatmap-cell {
+  transition: transform var(--transition-fast);
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.2);
 }
