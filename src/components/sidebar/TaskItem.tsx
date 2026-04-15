@@ -175,7 +175,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       {...attributes}
       style={{
         ...style,
-        borderLeft: `4px solid ${task.color || "var(--accent)"}`,
+        borderLeft: `4px solid ${task.color || "#204784"}`,
       }}
     >
       <div className="task-item-content">

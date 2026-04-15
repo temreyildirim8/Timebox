@@ -1,4 +1,11 @@
-import React, { useRef, useEffect, useMemo } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, {
+  useRef,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -6,6 +13,7 @@ import { format, isSameDay } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { TimeBlock, Task } from "../../types";
 import { useDroppable } from "@dnd-kit/core";
+import { EventContextMenu } from "./EventContextMenu";
 
 interface ScheduleProps {
   selectedDate: string;
@@ -130,13 +138,38 @@ export const Schedule: React.FC<ScheduleProps> = ({
           end: block.endTime,
           backgroundColor: isCompleted
             ? "rgba(31, 41, 55, 0.6)"
-            : task?.color || block.color || "var(--accent)",
+            : task?.color || block.color || "#204784",
           borderColor: "transparent",
           className: isCompleted ? "event-completed" : "",
           extendedProps: { taskId: block.taskId, completed: isCompleted },
         };
       });
   }, [timeBlocks, tasks, selectedDate]);
+
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    blockId: string;
+    taskId: string;
+    title: string;
+    completed: boolean;
+  } | null>(null);
+
+  const handleEventDidMount = useCallback((info: any) => {
+    const handler = (e: MouseEvent) => {
+      e.preventDefault();
+      setContextMenu({
+        x: e.clientX,
+        y: e.clientY,
+        blockId: info.event.id,
+        taskId: info.event.extendedProps.taskId,
+        title: info.event.title,
+        completed: info.event.extendedProps.completed,
+      });
+    };
+    info.el.addEventListener("contextmenu", handler);
+    return () => info.el.removeEventListener("contextmenu", handler);
+  }, []);
 
   const handleEventChange = (info: any) => {
     const { event } = info;
@@ -290,6 +323,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           eventChange={handleEventChange}
           eventReceive={handleEventReceive}
           eventDragStop={handleEventDragStop}
+          eventDidMount={handleEventDidMount}
           nowIndicator={true}
           dayHeaders={false}
           themeSystem="standard"
@@ -297,6 +331,18 @@ export const Schedule: React.FC<ScheduleProps> = ({
           eventDisplay="block"
         />
       </div>
+
+      {contextMenu && (
+        <EventContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          blockId={contextMenu.blockId}
+          taskId={contextMenu.taskId}
+          currentTitle={contextMenu.title}
+          isCompleted={contextMenu.completed}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
 
       <style>{`
         .fc {
@@ -378,6 +424,69 @@ export const Schedule: React.FC<ScheduleProps> = ({
           font-family: var(--font-mono);
           margin-bottom: 4px;
           color: rgba(255, 255, 255, 0.8);
+        }
+        .context-menu {
+          background: var(--bg-elevated);
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          padding: 4px;
+          min-width: 160px;
+          z-index: 9999;
+        }
+        .context-menu-item {
+          display: block;
+          width: 100%;
+          padding: 8px 12px;
+          background: transparent;
+          border: none;
+          border-radius: 4px;
+          color: var(--text-primary);
+          font-size: 0.85rem;
+          font-family: var(--font-body);
+          cursor: pointer;
+          text-align: left;
+        }
+        .context-menu-item:hover {
+          background: var(--bg-hover);
+        }
+        .context-menu-rename {
+          padding: 8px;
+        }
+        .context-menu-input {
+          width: 100%;
+          padding: 6px 8px;
+          background: var(--bg-primary);
+          border: 1px solid var(--border);
+          border-radius: 4px;
+          color: var(--text-primary);
+          font-size: 0.85rem;
+          font-family: var(--font-body);
+          outline: none;
+          box-sizing: border-box;
+        }
+        .context-menu-input:focus {
+          border-color: var(--accent-primary);
+        }
+        .context-menu-actions {
+          display: flex;
+          gap: 8px;
+          margin-top: 8px;
+          justify-content: flex-end;
+        }
+        .context-menu-btn {
+          padding: 4px 12px;
+          border-radius: 4px;
+          border: 1px solid var(--border);
+          background: transparent;
+          color: var(--text-primary);
+          font-size: 0.8rem;
+          cursor: pointer;
+        }
+        .context-menu-btn.save {
+          background: var(--accent-primary);
+          border-color: var(--accent-primary);
+          color: #fff;
         }
       `}</style>
     </div>

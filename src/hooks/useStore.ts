@@ -23,7 +23,8 @@ export function useStore() {
       },
       {} as Record<string, string>,
     );
-  }, [notesArray]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addTask = useCallback(
     async (title: string, list: "today" | "later") => {
@@ -41,6 +42,7 @@ export function useStore() {
         list,
         createdAt: new Date().toISOString(),
         date: list === "today" ? selectedDate : undefined,
+        color: "#3b82f6",
         order: maxOrder + 1,
       };
       await db.tasks.add(newTask);
@@ -167,7 +169,7 @@ export function useStore() {
           title: task.title,
           startTime: start.toISOString(),
           endTime: end.toISOString(),
-          color: task.color || "var(--accent)",
+          color: task.color || "#3b82f6",
         };
 
         await db.timeBlocks.where("taskId").equals(taskId).delete();
