@@ -1,0 +1,42 @@
+{
+  "nodes": [
+    {"id": "timebox_app", "label": "Timebox Application", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "three_panel_layout", "label": "Three Panel Layout", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "task_list_panel", "label": "Task List Panel", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "calendar_panel", "label": "Calendar Time-Block Panel", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "daily_notes_panel", "label": "Daily Notes Panel", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "task_items", "label": "Task Items with Checkboxes", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "time_blocks", "label": "Color-Coded Time Blocks", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "markdown_notes", "label": "Markdown Notes", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "dark_theme", "label": "Dark Theme UI", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "today_later_sections", "label": "Today and Later Task Sections", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "date_selector", "label": "Date Selector", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "task_timestamps", "label": "Task Timestamps", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "task_action_icons", "label": "Task Action Icons (color, link, delete)", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "distractions_section", "label": "Distractions Notes Section", "file_type": "image", "source_file": "public/demo.gif", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}
+  ],
+  "edges": [
+    {"source": "timebox_app", "target": "three_panel_layout", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "three_panel_layout", "target": "task_list_panel", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "three_panel_layout", "target": "calendar_panel", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "three_panel_layout", "target": "daily_notes_panel", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "task_list_panel", "target": "task_items", "relation": "contains", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "task_list_panel", "target": "today_later_sections", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "calendar_panel", "target": "time_blocks", "relation": "contains", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "calendar_panel", "target": "date_selector", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "daily_notes_panel", "target": "markdown_notes", "relation": "contains", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "daily_notes_panel", "target": "distractions_section", "relation": "contains", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "task_items", "target": "task_timestamps", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "task_items", "target": "task_action_icons", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "timebox_app", "target": "dark_theme", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "time_blocks", "target": "task_items", "relation": "shares_data_with", "confidence": "INFERRED", "confidence_score": 0.8, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0},
+    {"source": "task_items", "target": "markdown_notes", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.7, "source_file": "public/demo.gif", "source_location": null, "weight": 1.0}
+  ],
+  "hyperedges": [
+    {"id": "ui_panels", "label": "UI Panel Composition", "nodes": ["task_list_panel", "calendar_panel", "daily_notes_panel"], "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif"},
+    {"id": "task_features", "label": "Task Management Features", "nodes": ["task_items", "today_later_sections", "task_timestamps", "task_action_icons"], "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "public/demo.gif"},
+    {"id": "time_blocking", "label": "Time Blocking Workflow", "nodes": ["task_items", "time_blocks", "calendar_panel"], "relation": "implement", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "public/demo.gif"}
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

@@ -1,0 +1,18 @@
+{
+  "nodes": [
+    {"id": "hero_image", "label": "Hero Image", "file_type": "image", "source_file": "src/assets/hero.png", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "brand_identity", "label": "Brand Identity Visual", "file_type": "image", "source_file": "src/assets/hero.png", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "layered_box_motif", "label": "Layered Box Motif", "file_type": "image", "source_file": "src/assets/hero.png", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "purple_gradient_accent", "label": "Purple Gradient Accent", "file_type": "image", "source_file": "src/assets/hero.png", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null},
+    {"id": "isometric_layout", "label": "Isometric Layout", "file_type": "image", "source_file": "src/assets/hero.png", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}
+  ],
+  "edges": [
+    {"source": "hero_image", "target": "brand_identity", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.8, "source_file": "src/assets/hero.png", "source_location": null, "weight": 1.0},
+    {"source": "hero_image", "target": "layered_box_motif", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "src/assets/hero.png", "source_location": null, "weight": 1.0},
+    {"source": "layered_box_motif", "target": "purple_gradient_accent", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "src/assets/hero.png", "source_location": null, "weight": 1.0},
+    {"source": "hero_image", "target": "isometric_layout", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "src/assets/hero.png", "source_location": null, "weight": 1.0}
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}
